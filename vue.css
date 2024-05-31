@@ -6,6 +6,9 @@ body {
     margin: 0;
     padding: 20px;
 }
+.header img {
+    max-height: 80px;
+}
 .label total-container {
     display: flex;
     justify-content: flex-end;
@@ -24,6 +27,16 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ccc;
+}
+
+.header img {
+    max-height: 80px;
 }
 
 #app {

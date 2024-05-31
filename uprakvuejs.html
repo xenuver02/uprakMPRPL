@@ -9,111 +9,115 @@
 </head>
 <body>
     <div class="penjualan">
-    <div id="app">
-        <h1>Penjualan Barang</h1>
-        <label class="total">Total Harga: {{ totalHarga }}</label>
-        <div class="awal">
-            <label>No Nota:</label>
-            <input v-model="noNota" placeholder="Masukkan No Nota" />
-            <br>
-            <label>Nama Pelanggan:</label>
-            <input v-model="namaPelanggan" placeholder="Masukkan Nama Pelanggan" />
-            <br>
-            <label>Tanggal:</label>
-            <input type="date" v-model="tanggal" />
-        </div>
-        <div class="input">
-          <div class="namaBarang">
-            <label>Nama Barang:</label>
-            <!-- <label>
-              <input type="checkbox" v-model="namaBarang" value="Indomie" /> Indomie
-            </label>
-            <label>
-              <input type="checkbox" v-model="namaBarang" value="Sarimie" /> Sarimie
-            </label>
-            <label>
-              <input type="checkbox" v-model="namaBarang" value="Mie Sukses" /> Mie Sukses
-            </label> -->
-            <div class="item">
-              <label v-for="(item,index) in barang" :key="index">
-                <input type="checkbox" v-model="cart" :value="item">{{item.nama}}
-                Qty : <input type="number" v-model="item.jumlahBarang">
-              </label>
+        <div id="app">
+            <div class="header">
+                <h1>Penjualan Barang</h1>
+                <img src="media/logo-removebg-preview.png" alt="Logo">
             </div>
-          </div>
+            <label class="total">Total Harga: {{ totalHarga }}</label>
+            <div class="awal">
+                <label>No Nota:</label>
+                <input v-model="noNota" placeholder="Masukkan No Nota" />
+                <br>
+                <label>Nama Pelanggan:</label>
+                <input v-model="namaPelanggan" placeholder="Masukkan Nama Pelanggan" />
+                <br>
+                <label>Tanggal:</label>
+                <input type="date" v-model="tanggal" />
+            </div>
+            <div class="input">
+                <div class="namaBarang">
+                    <label>Nama Barang:</label>
+                    <div class="item">
+                        <select v-model="selectedItem">
+                            <option v-for="(item, index) in barang" :key="index" :value="item">{{ item.nama }}</option>
+                        </select>
+                        <label>
+                            Harga: <input type="number" :value="selectedItem.harga" readonly>
+                        </label>
+                        <label>Qty: <input type="number" v-model="selectedItem.jumlahBarang"></label>
+                        <button @click="tambahBarang(selectedItem)">Tambah</button>
+                    </div>
+                </div>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama Barang</th>
+                        <th>Kode Barang</th>
+                        <th>Harga Barang</th>
+                        <th>Jumlah</th>
+                        <th>Total</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(barang, index) in cart" :key="index">
+                        <td>{{ barang.nama }}</td>
+                        <td>{{ barang.kode }}</td>
+                        <td>{{ barang.harga }}</td>
+                        <td>{{ barang.jumlahBarang }}</td>
+                        <td>{{ barang.harga * barang.jumlahBarang }}</td>
+                        <td><button @click="hapusBarang(index)">Hapus</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div>
+                <label>Diskon (%):</label>
+                <input type="number" v-model="diskon" placeholder="Masukkan Diskon" />
+            </div>
+            <h2>Total: {{ totalHarga }}</h2>
+            <h2>Total Setelah Diskon: {{ totalSetelahDiskon }}</h2>
+            <div>
+                <label>Bayar:</label>
+                <input type="text" v-model="bayar" placeholder="Masukkan Jumlah Bayar" />
+            </div>
+            <h2>Kembalian: {{ kembalian }}</h2>
+        </div>
 
-            <!-- <label>Qty:             <input type="number" v-model="jumlahBarang" placeholder="Masukkan Jumlah Barang" /></label> -->
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Barang</th>
-                    <th>Kode Barang</th>
-                    <th>Harga Barang</th>
-                    <th>Jumlah</th>
-                    <th>Total</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(barang, index) in cart" :key="index">
-                    <td>{{ barang.nama }}</td>
-                    <td>{{ barang.kode }}</td>
-                    <td>{{ barang.harga }}</td>
-                    <td>{{ barang.jumlahBarang }}</td>
-                    <td>{{ barang.harga * barang.jumlahBarang }}</td>
-                    <td><button @click="hapusBarang(index)">Hapus</button></td>
-                </tr>
-            </tbody>
-        </table>
-        <div>
-            <label>Diskon (%):</label>
-            <input type="number" v-model="diskon" placeholder="Masukkan Diskon" />
-        </div>
-        <h2>Total: {{ totalHarga }}</h2>
-        <h2>Total Setelah Diskon: {{ totalSetelahDiskon }}</h2>
-        <div>
-            <label>Bayar:</label>
-            <input type="text" v-model="bayar" placeholder="Masukkan Jumlah Bayar" />
-        </div>
-        <h2>Kembalian: {{ kembalian }}</h2>
+        <script>
+            new Vue({
+                el: '#app',
+                data() {
+                    return {
+                        noNota: '',
+                        namaPelanggan: '',
+                        tanggal: '',
+                        cart: [],
+                        barang: [
+                            { id: 1, nama: 'Indomie', harga: 3000, kode: 'A001', jumlahBarang: 0 },
+                            { id: 2, nama: 'Sarimie', harga: 3500, kode: 'A002', jumlahBarang: 0 },
+                            { id: 3, nama: 'Mie Sukses', harga: 4000, kode: 'A003', jumlahBarang: 0 }
+                        ],
+                        diskon: 0,
+                        bayar: 0,
+                        kembalian: 0,
+                        selectedItem: []
+                    };
+                },
+                computed: {
+                    totalHarga() {
+                        return this.cart.reduce((total, item) => total + (item.harga * item.jumlahBarang), 0);
+                    },
+                    totalSetelahDiskon() {
+                        this.kembalian = this.bayar - (this.totalHarga * (1 - this.diskon / 100));
+                        return this.totalHarga * (1 - this.diskon / 100);
+                    }
+                },
+                methods: {
+                    hapusBarang(index) {
+                        this.cart.splice(index, 1);
+                    },
+                    tambahBarang(i) {
+                        if (i.jumlahBarang > 0) {
+                            this.cart.push(i);
+                        } else {
+                            alert('Jumlah barang tidak boleh kosong atau minus')
+                        }
+                    }
+                }
+            });
+        </script>
     </div>
-
-    <script>
-      //dibanti ginanjar
-      new Vue({
-        el: '#app',
-        data() {
-          return {
-            noNota: '',
-            namaPelanggan: '',
-            tanggal: '',
-            cart: [],
-            barang: [
-              { id: 1, nama: 'Indomie, ', harga: 3000, kode: 'A001', jumlahBarang: 0 },
-              { id: 2, nama: 'Sarimie, ', harga: 3500, kode: 'A002', jumlahBarang: 0 },
-              { id: 3, nama: 'Mie Sukses, ', harga: 4000, kode: 'A003', jumlahBarang: 0 }
-            ],
-            diskon: 0,
-            bayar: 0,
-            kembalian: 0
-          };
-        },
-        computed: {
-          totalHarga() {
-            return this.cart.reduce((total, item) => total + (item.harga * item.jumlahBarang), 0);
-          },
-          totalSetelahDiskon() {
-            this.kembalian = this.bayar - (this.totalHarga * (1 - this.diskon / 100));
-            return this.totalHarga * (1 - this.diskon / 100);
-          },
-        },
-        methods: {
-          hapusBarang(index) {
-            this.cart.splice(index, 1);
-          }
-        }
-      });
-    </script>
 </body>
 </html>
